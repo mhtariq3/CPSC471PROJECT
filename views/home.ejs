@@ -1,0 +1,22 @@
+<%- include("partials/header"); -%>
+<div class="container mt-5">
+
+<% if(login == true) {%>
+  <h2>Logged in as <%= data.name %></h2>
+
+
+  <br>
+  <form action="/appointment">
+    <button type="submit" class="btn btn-primary btn-lg">Book an appointment</button>
+  </form>
+  <br>
+  <form action="/profile">
+    <button type="submit" class="btn btn-secondary btn-lg">Update profile</button>
+  </form>
+<% } else { %>
+  <h2>Please Login or Register</h2>
+<% } %>
+</div>
+
+
+<%- include("partials/footer"); -%>

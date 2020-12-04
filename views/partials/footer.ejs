@@ -1,0 +1,21 @@
+</div>
+
+<script type="text/javascript">
+  let password = document.getElementById("pass");
+  let confirm_password = document.getElementById("confirmpass");
+
+  function validatePassword() {
+    if (password.value != confirm_password.value) {
+      confirm_password.setCustomValidity("Passwords Don't Match");
+    } else {
+      confirm_password.setCustomValidity('');
+    }
+  }
+
+  password.onchange = validatePassword;
+  confirm_password.onkeyup = validatePassword;
+</script>
+
+</body>
+
+</html>
