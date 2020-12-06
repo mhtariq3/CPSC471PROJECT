@@ -1,14 +1,26 @@
 <%- include("partials/header"); -%>
 
+<div class="container mt-5">
+  <h1>Book Appointment</h1>
 
-<form action="/ApiAppointmentDelete" method="POST">
-  <label for="apt_selected">Please pick a date and time from the list:</label>
-  <select name="apt_selected" id="apt_selected">
-    <% for(int i = 0; i < data.length; i++) { %>
-      <option> <%= data[i].date %> @ <%= data[i].time %> </option>
-    <% } %>
-  </select>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <form action="/ApiAppointmentDelete" method="POST">
+            <label for="apt_selected">Please pick a date and time from the list:</label>
+            <select name="apt_selected" id="apt_selected">
+              <% for(let i = 0; i < data.length; i++) { %>
+                <option value="<%=data[i].aptID%>"> <%= data[i].date %> @ <%= data[i].time %> </option>
+              <% } %>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-secondary btn-lg">Submit</button>
+          </form>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <button type="submit" class="btn btn-secondary btn-lg">Submit</button>
-</form>
 <%- include("partials/footer"); -%>

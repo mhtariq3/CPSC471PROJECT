@@ -1,0 +1,24 @@
+<%- include("partials/header"); -%>
+<div class="container mt-5">
+  <h2>Current Appointments:</h2>
+  <table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Appointment Number</th>
+        <th scope="col">Date</th>
+        <th scope="col">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(let i = 0; i < data.length; i++) { %>
+        <tr>
+          <th scope="row"><%= data[i].visitID %></th>
+          <td><%= data[i].date %></td>
+          <td><%= data[i].time %></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+</div>
+<%- include("partials/footer"); -%>

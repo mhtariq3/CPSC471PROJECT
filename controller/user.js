@@ -7,6 +7,8 @@ let id = 0;
 let login = false;
 let user_data = [];
 let profile_data = [];
+let appointment_data = [];
+let bookedAppointments = [];
 
 router.get('/ApiUserGet', async (req, res) => {
 try {
@@ -28,7 +30,10 @@ res.send(err.message)
 }
 });
 
-
+router.get("/logout", function(req,res) {
+  login = false;
+  res.redirect("/");
+});
 
 router.post('/ApiUserPost', async (req, res) => {
   let PTest = async function() {
@@ -141,11 +146,16 @@ router.get("/", function(req, res) {
   res.render("home", {login: login, data: user_data[0]});
 });
 
-// router.get("/appointment", function(req, res) {
-//   res.render("appointment", {data: appointment_data[0]});
-// });
+router.get("/appointment", function(req,res) {
+  if(appointment_data.length == 0) {
+    res.redirect("/ApiAppointmentGet");
+  } else {
+    res.render("appointment", {data: appointment_data});
+  }
+});
 
-router.get('/appointment', async (req, res) => {
+
+router.get('/ApiAppointmentGet', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
@@ -155,8 +165,8 @@ if (err)
 console.log(err)
 }
 else {
-  var appointment_data = userset.recordset;
-  res.render("appointment", {data: appointment_data});
+  appointment_data = userset.recordset;
+  res.redirect("/appointment");
 }
 })
 } catch (err) {
@@ -165,20 +175,66 @@ res.send(err.message)
 }
 });
 
-router.delete('/ApiAppointmentDelete', async (req, res) => {
-// try {
-// const pool = await poolPromise
-// const result = await pool.request()
-// .input("aptID", sql.Int, req.body.apt_selected)
-// .execute("DeleteAppointment").then(function (err, recordSet) {
-// console.log("Success");
-// })
-// } catch (err) {
-// res.status(500)
-// res.send(err.message)
-// }
-console.log(req.body.apt_selected);
+router.post('/ApiAppointmentDelete', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("aptID", sql.Int, req.body.apt_selected)
+.execute("DeleteAppointment").then(function (err, recordSet) {
+  for(let i = 0; i < appointment_data.length; i++) {
+    if(appointment_data[i].aptID == req.body.apt_selected) {
+      bookedAppointments.push(appointment_data[i]);
+    }
+  }
+  res.redirect("/ApiPatientVisitInsert");
 })
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+router.get('/ApiPatientVisitInsert', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("visitID", sql.Int, bookedAppointments[0].aptID)
+.input("patientID", sql.Int, user_data[0].userID)
+.input("date", sql.VarChar(255), bookedAppointments[0].date)
+.input("time", sql.VarChar(255), bookedAppointments[0].time)
+.execute("InsertPatientVisit").then(function (err, recordSet) {
+  bookedAppointments.pop();
+  res.redirect("/");
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+router.get('/viewAppointment', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.query("select * from PatientVisit where patientID='" + user_data[0].userID + "'",function(err, userset){
+if (err)
+{
+console.log(err)
+}
+else {
+  var viewApp = userset.recordset;
+  res.render("viewAppointment", {data: viewApp});
+}
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+});
+
+router.get('/admin', function(req,res) {
+  res.render('admin');
+});
 
 // router.post("/login", function (req, res) {
 //   const email = req.body.email;
