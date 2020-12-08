@@ -8,4 +8,5 @@ A medical clinic appointment booking application created using HTML, CSS, NodeJS
   * NodeJS: https://nodejs.org/en/
   * MS SQL Server Express: https://www.microsoft.com/en-ca/sql-server/sql-server-downloads
 
-#### 2. Install NodeJS and MS SQL Server Express
+#### 2. Change to project directory and run the command:
+  >npm i
