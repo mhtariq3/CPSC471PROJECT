@@ -11,3 +11,7 @@ A medical clinic appointment booking application created using HTML, CSS, NodeJS
 
 #### 2. Change to project directory and run the command:
   >npm i
+
+#### 3. Run SSMS
+  1. Set the server name as: localhost\SQLEXPRESS
+  2. Press Connect
