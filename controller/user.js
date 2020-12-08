@@ -453,7 +453,7 @@ router.get('/ApiPatientVisitGet', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
-.query('select * from Appointment',function(err, userset){
+.query('select * from PatientVisit',function(err, userset){
 if (err)
 {
 console.log(err)
@@ -474,10 +474,11 @@ router.post('/ApiPatientVisitPost', async (req, res) => {
     id++;
     const pool = await poolPromise
     const result = await pool.request()
-    .input("aptID", sql.Int, req.query.id)
+    .input("visitID", sql.Int, req.query.id)
+    .input("patientID", sql.Int, req.query.id)
     .input("date", sql.VarChar(255), req.query.date)
     .input("time", sql.VarChar(255), req.query.time)
-    .execute("InsertAppointment")
+    .execute("InsertPatientVisit")
   }
 
   let myfunc = PTest();
@@ -496,10 +497,11 @@ router.put('/ApiPatientVisitPut', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
-.input("aptID", sql.Int, req.query.id)
+.input("visitID", sql.Int, req.query.id)
+.input("patientID", sql.Int, req.query.id)
 .input("date", sql.VarChar(255), req.query.date)
 .input("time", sql.VarChar(255), req.query.time)
-.execute("UpdateAppointment").then(function (err, recordSet) {
+.execute("UpdatePatientVisit").then(function (err, recordSet) {
 res.status(200).json({ status: "Success" })
 })
 } catch (err) {
@@ -512,8 +514,8 @@ router.delete('/ApiPatientVisitDelete', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
-.input("aptID", sql.Int, req.query.id)
-.execute("DeleteAppointment").then(function (err, recordSet) {
+.input("visitID", sql.Int, req.query.id)
+.execute("DeletePatientVisit").then(function (err, recordSet) {
 res.status(200).json({ status: "Success" })
 })
 } catch (err) {
