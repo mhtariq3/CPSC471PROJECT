@@ -3,39 +3,19 @@ const router = express.Router()
 const { poolPromise } = require('../connection/DB.js')
 const sql = require('mssql')
 
-let id = 0;
+let id = 10;
 let login = false;
 let user_data = [];
 let profile_data = [];
 let appointment_data = [];
 let bookedAppointments = [];
 
-router.get('/ApiUserGet', async (req, res) => {
-try {
-const pool = await poolPromise
-const result = await pool.request()
-.query('select * from Users',function(err, userset){
-if (err)
-{
-console.log(err)
-}
-else {
-  var user_data = userset.recordset;
-  res.json(user_data);
-}
-})
-} catch (err) {
-res.status(500)
-res.send(err.message)
-}
-});
-
 router.get("/logout", function(req,res) {
   login = false;
   res.redirect("/");
 });
 
-router.post('/ApiUserPost', async (req, res) => {
+router.post('/UserPost', async (req, res) => {
   let PTest = async function() {
     id++;
     const pool = await poolPromise
@@ -59,7 +39,7 @@ router.post('/ApiUserPost', async (req, res) => {
   });
 });
 
-router.post('/ApiProfilePost', async (req, res) => {
+router.post('/ProfilePost', async (req, res) => {
   try {
   const pool = await poolPromise
   const result = await pool.request()
@@ -125,8 +105,6 @@ console.log(err)
 }
 else {
   user_data = userset.recordset;
-  // let login = false;
-  // res.json(user_data);
   if(user_data.length != 0) {
     login = true;
     res.redirect("/");
@@ -148,14 +126,14 @@ router.get("/", function(req, res) {
 
 router.get("/appointment", function(req,res) {
   if(appointment_data.length == 0) {
-    res.redirect("/ApiAppointmentGet");
+    res.redirect("/AppointmentGet");
   } else {
     res.render("appointment", {data: appointment_data});
   }
 });
 
 
-router.get('/ApiAppointmentGet', async (req, res) => {
+router.get('/AppointmentGet', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
@@ -175,7 +153,7 @@ res.send(err.message)
 }
 });
 
-router.post('/ApiAppointmentDelete', async (req, res) => {
+router.post('/AppointmentDelete', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
@@ -186,7 +164,7 @@ const result = await pool.request()
       bookedAppointments.push(appointment_data[i]);
     }
   }
-  res.redirect("/ApiPatientVisitInsert");
+  res.redirect("/PatientVisitInsert");
 })
 } catch (err) {
 res.status(500)
@@ -194,7 +172,7 @@ res.send(err.message)
 }
 })
 
-router.get('/ApiPatientVisitInsert', async (req, res) => {
+router.get('/PatientVisitInsert', async (req, res) => {
 try {
 const pool = await poolPromise
 const result = await pool.request()
@@ -236,12 +214,312 @@ router.get('/admin', function(req,res) {
   res.render('admin');
 });
 
-// router.post("/login", function (req, res) {
-//   const email = req.body.email;
-//   const password = req.body.pass;
-//
-//   res
-//
-// });
+// ** API OPERATIONS FOR USER **
+router.get('/ApiUserGet', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.query('select * from Users',function(err, userset){
+if (err)
+{
+console.log(err)
+}
+else {
+  var user_data = userset.recordset;
+  res.json(user_data);
+}
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+});
+
+router.post('/ApiUserPost', async (req, res) => {
+  let PTest = async function() {
+    id++;
+    const pool = await poolPromise
+    const result = await pool.request()
+    .input("userID", sql.Int, req.query.id)
+    .input("name", sql.VarChar(255), req.query.name)
+    .input("email", sql.VarChar(255), req.query.email)
+    .input("pass", sql.VarChar(255), req.query.pass)
+    .input("type", sql.VarChar(255), req.query.type)
+    .execute("InsertUser")
+  }
+
+  let myfunc = PTest();
+
+  myfunc.then(function (recordSet) {
+    res.status(200).json({ status: "Success" })
+  });
+
+  myfunc.catch(function() {
+    res.status(500)
+    res.send(err.message)
+  });
+});
+
+router.put('/ApiUserPut', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("userID", sql.Int, req.query.id)
+.input("name", sql.VarChar(255), req.query.name)
+.input("email", sql.VarChar(255), req.query.email)
+.input("pass", sql.VarChar(255), req.query.pass)
+.input("type", sql.VarChar(255), req.query.type)
+.execute("UpdateUsers").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+router.delete('/ApiUserDelete', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("userID", sql.Int, req.query.id)
+.execute("DeleteUser").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+// ** API OPERATIONS FOR PROFILE **
+router.get('/ApiProfileGet', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.query('select * from Profile',function(err, userset){
+if (err)
+{
+console.log(err)
+}
+else {
+  var user_data = userset.recordset;
+  res.json(user_data);
+}
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+});
+
+router.post('/ApiProfilePost', async (req, res) => {
+  let PTest = async function() {
+    id++;
+    const pool = await poolPromise
+    const result = await pool.request()
+    .input("userID", sql.Int, req.query.id)
+    .input("address", sql.VarChar(255), req.query.address)
+    .input("phone", sql.VarChar(255), req.query.phone)
+    .input("height", sql.VarChar(255), req.query.height)
+    .input("weight", sql.VarChar(255), req.query.weight)
+    .input("dob", sql.VarChar(255), req.query.dob)
+    .input("sex", sql.VarChar(255), req.query.sex)
+    .execute("InsertProfile")
+  }
+
+  let myfunc = PTest();
+
+  myfunc.then(function (recordSet) {
+    res.status(200).json({ status: "Success" })
+  });
+
+  myfunc.catch(function() {
+    res.status(500)
+    res.send(err.message)
+  });
+});
+
+router.put('/ApiProfilePut', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("userID", sql.Int, req.query.id)
+.input("address", sql.VarChar(255), req.query.address)
+.input("phone", sql.VarChar(255), req.query.phone)
+.input("height", sql.VarChar(255), req.query.height)
+.input("weight", sql.VarChar(255), req.query.weight)
+.input("dob", sql.VarChar(255), req.query.dob)
+.input("sex", sql.VarChar(255), req.query.sex)
+.execute("UpdateProfile").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+router.delete('/ApiProfileDelete', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("userID", sql.Int, req.query.id)
+.execute("DeleteProfile").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+// ** API OPERATIONS FOR APPOINTMENT **
+router.get('/ApiAppointmentGet', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.query('select * from Appointment',function(err, userset){
+if (err)
+{
+console.log(err)
+}
+else {
+  var user_data = userset.recordset;
+  res.json(user_data);
+}
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+});
+
+router.post('/ApiAppointmentPost', async (req, res) => {
+  let PTest = async function() {
+    id++;
+    const pool = await poolPromise
+    const result = await pool.request()
+    .input("aptID", sql.Int, req.query.id)
+    .input("date", sql.VarChar(255), req.query.date)
+    .input("time", sql.VarChar(255), req.query.time)
+    .execute("InsertAppointment")
+  }
+
+  let myfunc = PTest();
+
+  myfunc.then(function (recordSet) {
+    res.status(200).json({ status: "Success" })
+  });
+
+  myfunc.catch(function() {
+    res.status(500)
+    res.send(err.message)
+  });
+});
+
+router.put('/ApiAppointmentPut', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("aptID", sql.Int, req.query.id)
+.input("date", sql.VarChar(255), req.query.date)
+.input("time", sql.VarChar(255), req.query.time)
+.execute("UpdateAppointment").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+router.delete('/ApiAppointmentDelete', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("aptID", sql.Int, req.query.id)
+.execute("DeleteAppointment").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+// ** API OPERATIONS FOR PATIENTVISIT **
+router.get('/ApiPatientVisitGet', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.query('select * from Appointment',function(err, userset){
+if (err)
+{
+console.log(err)
+}
+else {
+  var user_data = userset.recordset;
+  res.json(user_data);
+}
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+});
+
+router.post('/ApiPatientVisitPost', async (req, res) => {
+  let PTest = async function() {
+    id++;
+    const pool = await poolPromise
+    const result = await pool.request()
+    .input("aptID", sql.Int, req.query.id)
+    .input("date", sql.VarChar(255), req.query.date)
+    .input("time", sql.VarChar(255), req.query.time)
+    .execute("InsertAppointment")
+  }
+
+  let myfunc = PTest();
+
+  myfunc.then(function (recordSet) {
+    res.status(200).json({ status: "Success" })
+  });
+
+  myfunc.catch(function() {
+    res.status(500)
+    res.send(err.message)
+  });
+});
+
+router.put('/ApiPatientVisitPut', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("aptID", sql.Int, req.query.id)
+.input("date", sql.VarChar(255), req.query.date)
+.input("time", sql.VarChar(255), req.query.time)
+.execute("UpdateAppointment").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
+
+router.delete('/ApiPatientVisitDelete', async (req, res) => {
+try {
+const pool = await poolPromise
+const result = await pool.request()
+.input("aptID", sql.Int, req.query.id)
+.execute("DeleteAppointment").then(function (err, recordSet) {
+res.status(200).json({ status: "Success" })
+})
+} catch (err) {
+res.status(500)
+res.send(err.message)
+}
+})
 
 module.exports = router;
