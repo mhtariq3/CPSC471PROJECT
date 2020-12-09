@@ -182,6 +182,7 @@ const result = await pool.request()
 .input("time", sql.VarChar(255), bookedAppointments[0].time)
 .execute("InsertPatientVisit").then(function (err, recordSet) {
   bookedAppointments.pop();
+  appointment_data = [];
   res.redirect("/");
 })
 } catch (err) {
