@@ -1,4 +1,3 @@
-CREATE DATABASE clinic;
 
 CREATE TABLE Appointment (
 	aptID int NOT NULL,
@@ -6,7 +5,7 @@ CREATE TABLE Appointment (
 	time varchar(255)
 );
 
-GO;
+GO
 
 CREATE TABLE PatientVisit (
 	visitID int NOT NULL,
@@ -15,7 +14,7 @@ CREATE TABLE PatientVisit (
 	time varchar(255)
 );
 
-GO;
+GO
 
 CREATE TABLE Profile (
 	userID int NOT NULL,
@@ -27,6 +26,8 @@ CREATE TABLE Profile (
 	sex varchar(255)
 );
 
+GO
+
 CREATE TABLE Users (
 	userID int NOT NULL,
     name varchar(255),
@@ -35,7 +36,7 @@ CREATE TABLE Users (
 	type varchar(255)
 );
 
-GO;
+GO
 
 CREATE procedure [user].[UpdateProfile]  
 (  
@@ -61,7 +62,7 @@ update Profile set
 where userID = @userID
 END
 
-GO;
+GO
 
 CREATE procedure [user].[UpdateAppointment]  
 (  
@@ -79,7 +80,7 @@ update Appointment set
 where aptID = @aptID
 END
 
-GO;
+GO
 
 CREATE procedure [user].[UpdatePatientVisit]  
 (  
@@ -99,7 +100,7 @@ update PatientVisit set
 where visitID = @visitID
 END
 
-GO;
+GO
 
 CREATE procedure [user].[UpdateUsers]  
 (  
@@ -122,7 +123,7 @@ update Users set
 where userID = @userID
 END
 
-GO;
+GO
 
 CREATE procedure [user].[DeleteAppointment]  
 (  
@@ -133,7 +134,7 @@ BEGIN
 delete from Appointment where aptID=@aptID  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[DeleteProfile]  
 (  
@@ -144,7 +145,7 @@ BEGIN
 delete from Profile where userID=@userID  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[DeleteUser]  
 (  
@@ -155,7 +156,7 @@ BEGIN
 delete from Users where userID=@userID  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[DeletePatientVisit]  
 (  
@@ -166,7 +167,7 @@ BEGIN
 delete from PatientVisit where visitID = @visitID  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[InsertUser]  
 (  
@@ -181,7 +182,7 @@ BEGIN
 insert into Users (userID,name,email,pass,type) values(@userID,@name,@email,@pass,@type)  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[InsertAppointment]  
 (  
@@ -194,7 +195,7 @@ BEGIN
 insert into Appointment (aptID,date,time) values(@aptID,@date,@time)  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[InsertPatientVisit]  
 (  
@@ -208,7 +209,7 @@ BEGIN
 insert into PatientVisit (visitID,patientID,date,time) values(@visitID,@patientID,@date,@time)  
 END
 
-GO;
+GO
 
 CREATE procedure [user].[InsertProfile]  
 (  
@@ -225,7 +226,7 @@ BEGIN
 insert into Profile (userID,address,phone,height,weight,dob,sex) values(@userID,@address,@phone,@height,@weight,@dob,@sex)  
 END
 
-GO;
+GO
 
 insert into Appointment (aptID,date,time) values (1,'June 01, 2021','10:00 AM')
 insert into Appointment (aptID,date,time) values (2,'June 01, 2021','11:00 AM')
