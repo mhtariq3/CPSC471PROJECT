@@ -20,8 +20,11 @@ A medical clinic appointment booking application created using HTML, CSS, NodeJS
   5. Goto Security -> Login -> Create a new Login with user and pass as 'user' and 'user' respectively with default database as clinic
   6. While creating new Login, goto Securables and grant the user with all the permissions
   7. Right click on localhost\SQLEXPRESS -> Properties -> Security -> Switch to SQL Server and Windows Authentication mode
-  8. Disconnect and Connect to database with new login
-  9. Execute Script.sql on clinic database
+  8. Start the SQL Server Configuration Manager
+  9. Goto SQL Server Services -> Right click SQL Server Broswer -> Properties -> Service -> Make the Start Mode Automatic
+  10. Goto SQL Server Network Configuration -> Enable TCP/IP
+  11. Disconnect and Connect to database with new login
+  12. Execute Script.sql on clinic database
   
 #### 4. In terminal, run the command:
   >node app.js
