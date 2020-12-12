@@ -3,7 +3,7 @@ const router = express.Router()
 const { poolPromise } = require('../connection/DB.js')
 const sql = require('mssql')
 
-let id = 10;
+let id = 50;
 let login = false;
 let user_data = [];
 let profile_data = [];
@@ -476,7 +476,7 @@ router.post('/ApiPatientVisitPost', async (req, res) => {
     const pool = await poolPromise
     const result = await pool.request()
     .input("visitID", sql.Int, req.query.id)
-    .input("patientID", sql.Int, req.query.id)
+    .input("patientID", sql.Int, req.query.pid)
     .input("date", sql.VarChar(255), req.query.date)
     .input("time", sql.VarChar(255), req.query.time)
     .execute("InsertPatientVisit")
@@ -499,7 +499,7 @@ try {
 const pool = await poolPromise
 const result = await pool.request()
 .input("visitID", sql.Int, req.query.id)
-.input("patientID", sql.Int, req.query.id)
+.input("patientID", sql.Int, req.query.pid)
 .input("date", sql.VarChar(255), req.query.date)
 .input("time", sql.VarChar(255), req.query.time)
 .execute("UpdatePatientVisit").then(function (err, recordSet) {
